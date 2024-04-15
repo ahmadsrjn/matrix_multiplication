@@ -20,26 +20,8 @@
   </div>
   <%= form.submit "Calculate Multiplication" %>
 <% end %>
-
-<h2>Result Matrix</h2>
-<% if @result_matrix %>
-  <% @result_matrix.each do |row| %>
-    <div>
-      <% row.each do |value| %>
-        <%= value %> 
-      <% end %>
-    </div>
-  <% end %>
-<% else %>
-  <p>No matrix calculated yet.</p>
-<% end %>
-<h2><%=  @result_matrix%></h2>
-
-
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    debugger;
     function setupMatrixInputs(matrixId, rowsId, colsId) {
       const rowsInput = document.getElementById(rowsId);
       const colsInput = document.getElementById(colsId);

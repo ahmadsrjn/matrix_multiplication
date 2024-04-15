@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   root 'matrices#index'
   post 'multiply', to: 'matrices#multiply'
+  get  'show_resultant_matrix',     to: 'matrices#show_resultant_matrix'
 
   # Defines the root path route ("/")
   # root "posts#index"

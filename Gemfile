@@ -31,6 +31,7 @@ gem 'sassc-rails'
 gem 'pry'
 gem 'pry-byebug'
 gem 'activerecord-session_store'
+gem 'webpacker'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
