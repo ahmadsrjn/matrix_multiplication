@@ -1,51 +1,72 @@
 <%= form_with url: multiply_path, method: :post, local: true, class: 'container mt-4' do |form| %>
-  <div class="mb-4">
-    <h1>Enter Matrix Sizes</h1>
-    <p class="text-muted">Matrix multiplication is a fundamental operation in linear algebra. It involves multiplying the rows of the first matrix by the columns of the second matrix. For the multiplication to be valid, the number of columns in the first matrix must equal the number of rows in the second matrix.</p>
-  </div>
-  
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <label for="rows_a" class="form-label">Matrix A: Rows</label>
-      <%= number_field_tag :rows_a, nil, id: 'rows_a', class: 'form-control' %>
-    </div>
-    <div class="col-md-6">
-      <label for="cols_a" class="form-label">Columns</label>
-      <%= number_field_tag :cols_a, nil, id: 'cols_a', class: 'form-control' %>
-    </div>
-  </div>
-
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <label for="rows_b" class="form-label">Matrix B: Rows</label>
-      <%= number_field_tag :rows_b, nil, id: 'rows_b', class: 'form-control', readonly: true, style: 'background-color: #adb5bd;' %>
-    </div>
-    <div class="col-md-6">
-      <label for="cols_b" class="form-label">Columns</label>
-      <%= number_field_tag :cols_b, nil, id: 'cols_b', class: 'form-control' %>
-    </div>
-  </div>
-
   <div class="row">
-    <div class="col-md-6 mb-3">
-      <h2>Matrix A Values:</h2>
-      <div id="matrix_a_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
-    </div>
-    <div class="col-md-6 mb-3">
-      <h2>Matrix B Values:</h2>
-      <div id="matrix_b_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
-    </div>
-  </div>
+    <!-- Left Column for Matrix Size Inputs -->
+    <div class="col-md-6">
+      <div class="mb-4">
+        <h1>Enter Matrix Sizes</h1>
+        <p class="text-muted">Matrix multiplication is a fundamental operation in linear algebra. It involves multiplying the rows of the first matrix by the columns of the second matrix. For the multiplication to be valid, the number of columns in the first matrix must equal the number of rows in the second matrix.</p>
+      </div>
 
-  <%= form.submit "Calculate Multiplication", class: 'btn btn-primary' %>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="rows_a" class="form-label">Matrix A: Rows</label>
+          <%= number_field_tag :rows_a, nil, id: 'rows_a', class: 'form-control' %>
+        </div>
+        <div class="col-md-6">
+          <label for="cols_a" class="form-label">Columns</label>
+          <%= number_field_tag :cols_a, nil, id: 'cols_a', class: 'form-control' %>
+        </div>
+      </div>
 
-  <div class="mt-4">
-    <p>After submitting, the matrices entered will be multiplied to produce a result matrix. The elements of the result matrix are computed as the dot product of rows and columns from the input matrices. This operation is key in various applications such as graphics, engineering simulations, and more.</p>
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <label for="rows_b" class="form-label">Matrix B: Rows</label>
+          <%= number_field_tag :rows_b, nil, id: 'rows_b', class: 'form-control', readonly: true, style: 'background-color: #adb5bd;' %>
+          <small class="form-text text-muted">
+            The number of rows in Matrix B is automatically set to match the number of columns in Matrix A, as matrix multiplication requires the columns of the first matrix (Matrix A) to be equal to the rows of the second matrix (Matrix B).
+          </small>
+        </div>
+        <div class="col-md-6">
+          <label for="cols_b" class="form-label">Columns</label>
+          <%= number_field_tag :cols_b, nil, id: 'cols_b', class: 'form-control' %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column for Matrix Values and Buttons -->
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <h2>Matrix A Values:</h2>
+          <div id="matrix_a_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
+          <button type="button" onclick="fillMatrix('matrix_a_values', 'random')" class="btn btn-secondary mt-2">Fill Matrix A with Random</button>
+          <button type="button" onclick="fillMatrix('matrix_a_values', 'zero')" class="btn btn-secondary mt-2">Fill Matrix A with Zeros</button>
+        </div>
+        <div class="col-md-6 mb-3">
+          <h2>Matrix B Values:</h2>
+          <div id="matrix_b_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
+          <button type="button" onclick="fillMatrix('matrix_b_values', 'random')" class="btn btn-secondary mt-2">Fill Matrix B with Random</button>
+          <button type="button" onclick="fillMatrix('matrix_b_values', 'zero')" class="btn btn-secondary mt-2">Fill Matrix B with Zeros</button>
+        </div>
+      </div>
+      <%= form.submit "Calculate Multiplication", class: 'btn btn-primary mt-3' %>
+    </div>
   </div>
 <% end %>
 
 
 <script>
+  function fillMatrix(matrixId, type) {
+      const container = document.getElementById(matrixId);
+      const inputs = container.querySelectorAll('input[type="number"]');
+      inputs.forEach(input => {
+        if (type === 'random') {
+          input.value = Math.floor(Math.random() * 10);
+        } else if (type === 'zero') {
+          input.value = 0;
+        }
+      });
+    }
   document.addEventListener('DOMContentLoaded', function() {
     function setupMatrixInputs(matrixId, rowsId, colsId) {
       const rowsInput = document.getElementById(rowsId);
@@ -58,21 +79,21 @@
         container.innerHTML = ''; // Clear existing inputs
 
         for (let i = 0; i < rows; i++) {
-          const rowDiv = document.createElement('div'); // Create a div for each row
-          rowDiv.className = 'd-flex'; // Bootstrap class to display flex
+          const rowDiv = document.createElement('div');
+          rowDiv.className = 'd-flex';
 
           for (let j = 0; j < cols; j++) {
             const input = document.createElement('input');
             input.type = 'number';
             input.name = `${matrixId}[${i}][${j}]`;
             input.required = true;
-            input.classList.add('form-control', 'me-2'); // Bootstrap classes for form control and margin-right
-            input.style.width = '75px'; // Set a fixed width for each input
+            input.classList.add('form-control', 'me-2');
+            input.style.width = '75px';
 
-            rowDiv.appendChild(input); // Add each input to the row div
+            rowDiv.appendChild(input);
           }
 
-          container.appendChild(rowDiv); // Add the complete row div to the container
+          container.appendChild(rowDiv);
         }
       }
 
@@ -86,13 +107,12 @@
 
       colsAInput.addEventListener('change', function() {
         const colsValue = parseInt(colsAInput.value, 10) || 0;
-        rowsBInput.value = colsValue; // Set Matrix B Rows equal to Matrix A Columns
+        rowsBInput.value = colsValue;
         if (colsValue > 0) {
-          rowsBInput.dispatchEvent(new Event('change')); // Trigger change event to update inputs
+          rowsBInput.dispatchEvent(new Event('change'));
         }
       });
     }
-
     setupMatrixInputs('matrix_a_values', 'rows_a', 'cols_a');
     setupMatrixInputs('matrix_b_values', 'rows_b', 'cols_b');
     synchronizeMatrixSize();
