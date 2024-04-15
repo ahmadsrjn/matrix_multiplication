@@ -1,25 +1,42 @@
-<%= form_with url: multiply_path, method: :post, local: true do |form| %>
-  <h1>Enter Matrix Sizes</h1>
-  <div>
-    <label>Matrix A: Rows</label>
-    <%= number_field_tag :rows_a, nil, id: 'rows_a' %>
-    <label>Columns</label>
-    <%= number_field_tag :cols_a, nil, id: 'cols_a' %>
+<%= form_with url: multiply_path, method: :post, local: true, class: 'container mt-4' do |form| %>
+  <h1 class="mb-4">Enter Matrix Sizes</h1>
+  
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="rows_a" class="form-label">Matrix A: Rows</label>
+      <%= number_field_tag :rows_a, nil, id: 'rows_a', class: 'form-control' %>
+    </div>
+    <div class="col-md-6">
+      <label for="cols_a" class="form-label">Columns</label>
+      <%= number_field_tag :cols_a, nil, id: 'cols_a', class: 'form-control' %>
+    </div>
   </div>
-  <div>
-    <label>Matrix B: Rows</label>
-    <%= number_field_tag :rows_b, nil, id: 'rows_b', readonly: true %>
-    <label>Columns</label>
-    <%= number_field_tag :cols_b, nil, id: 'cols_b' %>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <label for="rows_b" class="form-label">Matrix B: Rows</label>
+      <%= number_field_tag :rows_b, nil, id: 'rows_b', class: 'form-control', readonly: true, style: 'background-color: #adb5bd;' %>
+    </div>
+    <div class="col-md-6">
+      <label for="cols_b" class="form-label">Columns</label>
+      <%= number_field_tag :cols_b, nil, id: 'cols_b', class: 'form-control' %>
+    </div>
   </div>
-  <div>
-    <h2>Matrix A Values:</h2>
-    <div id="matrix_a_values"></div>
-    <h2>Matrix B Values:</h2>
-    <div id="matrix_b_values"></div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <h2>Matrix A Values:</h2>
+      <div id="matrix_a_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <h2>Matrix B Values:</h2>
+      <div id="matrix_b_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
+    </div>
   </div>
-  <%= form.submit "Calculate Multiplication" %>
+
+  <%= form.submit "Calculate Multiplication", class: 'btn btn-primary' %>
 <% end %>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     function setupMatrixInputs(matrixId, rowsId, colsId) {
@@ -33,14 +50,21 @@
         container.innerHTML = ''; // Clear existing inputs
 
         for (let i = 0; i < rows; i++) {
+          const rowDiv = document.createElement('div'); // Create a div for each row
+          rowDiv.className = 'd-flex'; // Bootstrap class to display flex
+
           for (let j = 0; j < cols; j++) {
             const input = document.createElement('input');
             input.type = 'number';
             input.name = `${matrixId}[${i}][${j}]`;
             input.required = true;
-            container.appendChild(input);
+            input.classList.add('form-control', 'me-2'); // Bootstrap classes for form control and margin-right
+            input.style.width = '75px'; // Set a fixed width for each input
+
+            rowDiv.appendChild(input); // Add each input to the row div
           }
-          container.appendChild(document.createElement('br'));
+
+          container.appendChild(rowDiv); // Add the complete row div to the container
         }
       }
 
@@ -58,7 +82,7 @@
         if (colsValue > 0) {
           rowsBInput.dispatchEvent(new Event('change')); // Trigger change event to update inputs
         }
-     });
+      });
     }
 
     setupMatrixInputs('matrix_a_values', 'rows_a', 'cols_a');
