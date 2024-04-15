@@ -1,0 +1,72 @@
+<%= form_with url: multiply_path, method: :post, local: true do |form| %>
+  <h1>Enter Matrix Sizes</h1>
+  <div>
+    <label>Matrix A: Rows</label>
+    <%= number_field_tag :rows_a, nil, id: 'rows_a' %>
+    <label>Columns</label>
+    <%= number_field_tag :cols_a, nil, id: 'cols_a' %>
+  </div>
+  <div>
+    <label>Matrix B: Rows</label>
+    <%= number_field_tag :rows_b, nil, id: 'rows_b' %>
+    <label>Columns</label>
+    <%= number_field_tag :cols_b, nil, id: 'cols_b' %>
+  </div>
+  <div>
+    <h2>Matrix A Values:</h2>
+    <div id="matrix_a_values"></div>
+    <h2>Matrix B Values:</h2>
+    <div id="matrix_b_values"></div>
+  </div>
+  <%= form.submit "Calculate Multiplication" %>
+<% end %>
+
+<h2>Result Matrix</h2>
+<% if @result_matrix %>
+  <% @result_matrix.each do |row| %>
+    <div>
+      <% row.each do |value| %>
+        <%= value %> 
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <p>No matrix calculated yet.</p>
+<% end %>
+<h2><%=  @result_matrix%></h2>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    debugger;
+    function setupMatrixInputs(matrixId, rowsId, colsId) {
+      const rowsInput = document.getElementById(rowsId);
+      const colsInput = document.getElementById(colsId);
+      const container = document.getElementById(matrixId);
+
+      function updateInputs() {
+        const rows = parseInt(rowsInput.value, 10) || 0;
+        const cols = parseInt(colsInput.value, 10) || 0;
+        container.innerHTML = ''; // Clear existing inputs
+
+        for (let i = 0; i < rows; i++) {
+          for (let j = 0; j < cols; j++) {
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.name = `${matrixId}[${i}][${j}]`;
+            input.required = true;
+            container.appendChild(input);
+          }
+          container.appendChild(document.createElement('br'));
+        }
+      }
+
+      rowsInput.addEventListener('change', updateInputs);
+      colsInput.addEventListener('change', updateInputs);
+    }
+
+    setupMatrixInputs('matrix_a_values', 'rows_a', 'cols_a');
+    setupMatrixInputs('matrix_b_values', 'rows_b', 'cols_b');
+  });
+</script>
