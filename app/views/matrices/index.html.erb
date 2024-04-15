@@ -8,7 +8,7 @@
   </div>
   <div>
     <label>Matrix B: Rows</label>
-    <%= number_field_tag :rows_b, nil, id: 'rows_b' %>
+    <%= number_field_tag :rows_b, nil, id: 'rows_b', readonly: true %>
     <label>Columns</label>
     <%= number_field_tag :cols_b, nil, id: 'cols_b' %>
   </div>
@@ -48,7 +48,21 @@
       colsInput.addEventListener('change', updateInputs);
     }
 
+    function synchronizeMatrixSize() {
+      const colsAInput = document.getElementById('cols_a');
+      const rowsBInput = document.getElementById('rows_b');
+
+      colsAInput.addEventListener('change', function() {
+        const colsValue = parseInt(colsAInput.value, 10) || 0;
+        rowsBInput.value = colsValue; // Set Matrix B Rows equal to Matrix A Columns
+        if (colsValue > 0) {
+          rowsBInput.dispatchEvent(new Event('change')); // Trigger change event to update inputs
+        }
+     });
+    }
+
     setupMatrixInputs('matrix_a_values', 'rows_a', 'cols_a');
     setupMatrixInputs('matrix_b_values', 'rows_b', 'cols_b');
+    synchronizeMatrixSize();
   });
 </script>

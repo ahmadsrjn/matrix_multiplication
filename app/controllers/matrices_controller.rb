@@ -39,6 +39,7 @@ class MatricesController < ApplicationController
       session[:resultant_matrix_] =  resultant_matrix
       redirect_to controller: 'matrices', action: 'show_resultant_matrix'
     else
+      puts "Invalid Matrix Multiplication Size"
     end
   end
    
