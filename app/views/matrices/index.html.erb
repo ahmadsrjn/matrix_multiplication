@@ -1,3 +1,17 @@
+<style>
+  .square-input {
+    border: 2px solid #333; /* Dark grey border */
+    border-radius: 0; /* Square corners */
+    padding: 8px 12px; /* Padding inside the input */
+}
+
+/* Optional: Change focus color */
+.square-input:focus {
+    border-color: #0062cc; /* Change focus border color, e.g., blue */
+    box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25); /* Optional: Adding focus shadow */
+}
+
+</style>
 <%= form_with url: multiply_path, method: :post, local: true, class: 'container mt-4' do |form| %>
   <div class="row">
     <!-- Left Column for Matrix Size Inputs -->
@@ -6,30 +20,36 @@
         <h1>Enter Matrix Sizes</h1>
         <p class="text-muted">Matrix multiplication is a fundamental operation in linear algebra. It involves multiplying the rows of the first matrix by the columns of the second matrix. For the multiplication to be valid, the number of columns in the first matrix must equal the number of rows in the second matrix.</p>
       </div>
-
       <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="rows_a" class="form-label">Matrix A: Rows</label>
-          <%= number_field_tag :rows_a, nil, id: 'rows_a', class: 'form-control' %>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
+          <%= number_field_tag :rows_a, 2, id: 'rows_a', class: 'form-control square-input' %>
+        </div>
+        <div class="col-md-3">
           <label for="cols_a" class="form-label">Columns</label>
-          <%= number_field_tag :cols_a, nil, id: 'cols_a', class: 'form-control' %>
+        </div>
+        <div class="col-md-3">
+          <%= number_field_tag :cols_a, 2, id: 'cols_a', class: 'form-control square-input' %>
         </div>
       </div>
-
       <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-3">
           <label for="rows_b" class="form-label">Matrix B: Rows</label>
-          <%= number_field_tag :rows_b, nil, id: 'rows_b', class: 'form-control', readonly: true, style: 'background-color: #adb5bd;' %>
-          <small class="form-text text-muted">
-            The number of rows in Matrix B is automatically set to match the number of columns in Matrix A, as matrix multiplication requires the columns of the first matrix (Matrix A) to be equal to the rows of the second matrix (Matrix B).
-          </small>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
+          <%= number_field_tag :rows_b, 2, id: 'rows_b', class: 'form-control square-input', readonly: true, style: 'background-color: #adb5bd;' %>
+        </div>
+        <div class="col-md-3">
           <label for="cols_b" class="form-label">Columns</label>
-          <%= number_field_tag :cols_b, nil, id: 'cols_b', class: 'form-control' %>
         </div>
+        <div class="col-md-3">
+          <%= number_field_tag :cols_b, 2, id: 'cols_b', class: 'form-control square-input' %>
+        </div>
+      </div>
+      <div class="mb-4">
+        <p class="text-muted">The number of rows in Matrix B is automatically set to match the number of columns in Matrix A, as matrix multiplication requires the columns of the first matrix (Matrix A) to be equal to the rows of the second matrix (Matrix B).</p>
       </div>
     </div>
 
@@ -41,20 +61,20 @@
           <div id="matrix_a_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
           <button type="button" onclick="fillMatrix('matrix_a_values', 'random')" class="btn btn-secondary mt-2">Fill Matrix A with Random</button>
           <button type="button" onclick="fillMatrix('matrix_a_values', 'zero')" class="btn btn-secondary mt-2">Fill Matrix A with Zeros</button>
+          <button type="button" onclick="clearMatrix('matrix_a_values')" class="btn btn-danger mt-2">Clear Matrix A</button>
         </div>
         <div class="col-md-6 mb-3">
           <h2>Matrix B Values:</h2>
           <div id="matrix_b_values" class="p-2" style="min-height: 100px; overflow-x: auto;"></div>
           <button type="button" onclick="fillMatrix('matrix_b_values', 'random')" class="btn btn-secondary mt-2">Fill Matrix B with Random</button>
           <button type="button" onclick="fillMatrix('matrix_b_values', 'zero')" class="btn btn-secondary mt-2">Fill Matrix B with Zeros</button>
+          <button type="button" onclick="clearMatrix('matrix_b_values')" class="btn btn-danger mt-2">Clear Matrix B</button>
         </div>
       </div>
       <%= form.submit "Calculate Multiplication", class: 'btn btn-primary mt-3' %>
     </div>
   </div>
 <% end %>
-
-
 <script>
   function fillMatrix(matrixId, type) {
       const container = document.getElementById(matrixId);
@@ -65,6 +85,13 @@
         } else if (type === 'zero') {
           input.value = 0;
         }
+      });
+    }
+    function clearMatrix(matrixId) {
+      const container = document.getElementById(matrixId);
+      const inputs = container.querySelectorAll('input[type="number"]');
+      inputs.forEach(input => {
+        input.value = '';
       });
     }
   document.addEventListener('DOMContentLoaded', function() {
@@ -97,9 +124,11 @@
         }
       }
 
-      rowsInput.addEventListener('change', updateInputs);
-      colsInput.addEventListener('change', updateInputs);
-    }
+    rowsInput.addEventListener('change', updateInputs);
+    colsInput.addEventListener('change', updateInputs);
+    // Call updateInputs initially to populate the fields
+    updateInputs();
+  }
 
     function synchronizeMatrixSize() {
       const colsAInput = document.getElementById('cols_a');
@@ -113,6 +142,7 @@
         }
       });
     }
+
     setupMatrixInputs('matrix_a_values', 'rows_a', 'cols_a');
     setupMatrixInputs('matrix_b_values', 'rows_b', 'cols_b');
     synchronizeMatrixSize();
